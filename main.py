@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import argparse
 from copy import copy, deepcopy
 from datetime import datetime, timedelta
 import icalendar
 import locale
 import logging
+from optparse import OptionParser
 import re
 import json
 import os
@@ -185,14 +185,14 @@ def write_ical(basepath, scioperi):
     logging.info('finished writing ical file')
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--logfile', help='path to the logfile',
+    parser = OptionParser()
+    parser.add_option('--logfile', dest='logfile', help='path to the logfile',
         default='sciopero.log')
-    parser.add_argument('--basepath',
+    parser.add_option('--basepath', dest='basepath',
         help='directory in which to save the files', default='.')
-    args = parser.parse_args()
+    (options, args) = parser.parse_args()
 
-    logging.basicConfig(filename=args.logfile, level=logging.DEBUG,
+    logging.basicConfig(filename=options.logfile, level=logging.DEBUG,
         format='%(asctime)s - %(levelname)s - %(message)s')
 
     logging.info('starting')
@@ -200,8 +200,8 @@ def main():
     rss = get_rss()
     scioperi = parse(rss)
 
-    write_json(args.basepath, scioperi)
-    write_ical(args.basepath, scioperi)
+    write_json(options.basepath, scioperi)
+    write_ical(options.basepath, scioperi)
 
     logging.info('finished')
 
